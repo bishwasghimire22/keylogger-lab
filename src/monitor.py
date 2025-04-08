@@ -1,8 +1,14 @@
-# src/monitor.py
 from flask import Flask, render_template_string
-from src.utils.encryption import decrypt
-from src.config import ENC_LOG_FILE
 import os
+import sys
+
+# Add current directory to path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_dir)
+
+# Now import project modules
+from utils.encryption import decrypt
+from config import ENC_LOG_FILE
 
 app = Flask(__name__)
 
@@ -18,7 +24,6 @@ def view_logs():
                     logs.append(decrypt(line))
                 except Exception:
                     logs.append("[Error decrypting line]")
-
     html = """
     <html>
     <head>
@@ -39,4 +44,5 @@ def view_logs():
 
 
 if __name__ == "__main__":
+    print(f"Monitor running at http://localhost:5000")
     app.run(port=5000)

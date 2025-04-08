@@ -1,6 +1,12 @@
 # src/utils/encryption.py
 from cryptography.fernet import Fernet
-from src.config import KEY
+import os
+import sys
+
+
+# Add parent directory to path to find config
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import KEY
 
 cipher = Fernet(KEY)
 
